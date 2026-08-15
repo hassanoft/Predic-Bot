@@ -1,0 +1,30 @@
+{
+  "name": "football-prediction-bot",
+  "version": "1.0.0",
+  "description": "Bot Telegram de pronostics football (1X2, BTTS, Over/Under, Double Chance, Score Exact) avec système Premium et validation de paiement manuelle.",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "telegram",
+    "bot",
+    "football",
+    "predictions",
+    "telegraf"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "better-sqlite3": "^11.8.1",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "node-cron": "^3.0.3",
+    "telegraf": "^4.16.3"
+  }
+}

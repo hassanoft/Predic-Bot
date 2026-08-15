@@ -1,0 +1,44 @@
+services:
+  - type: web
+    name: football-prediction-bot
+    runtime: node
+    plan: starter
+    region: frankfurt
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: DATABASE_PATH
+        value: /data/database.sqlite
+      - key: DAILY_CRON_SCHEDULE
+        value: 0 8 * * *
+      - key: DAILY_PREDICTIONS_COUNT
+        value: 5
+      - key: RAPIDAPI_HOST
+        value: football-prediction-api.p.rapidapi.com
+      # ⚠️ Secrets à saisir manuellement dans le dashboard Render
+      # (Environment > Add Environment Variable) — ne jamais les committer.
+      - key: BOT_TOKEN
+        sync: false
+      - key: ADMIN_TELEGRAM_ID
+        sync: false
+      - key: ADMIN_GROUP_ID
+        sync: false
+      - key: RAPIDAPI_KEY
+        sync: false
+      - key: ORANGE_MONEY_NUMBER
+        sync: false
+      - key: MTN_MOMO_NUMBER
+        sync: false
+      - key: MOOV_MONEY_NUMBER
+        sync: false
+      - key: WAVE_NUMBER
+        sync: false
+    disk:
+      name: football-bot-data
+      mountPath: /data
+      sizeGB: 1
