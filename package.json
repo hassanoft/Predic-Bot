@@ -2,7 +2,7 @@
   "name": "football-prediction-bot",
   "version": "1.0.0",
   "description": "Bot Telegram de pronostics football (1X2, BTTS, Over/Under, Double Chance, Score Exact) avec système Premium et validation de paiement manuelle.",
-  "type": "module",
+  "type": "commonjs",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
