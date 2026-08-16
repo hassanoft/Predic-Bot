@@ -1,4 +1,5 @@
 require('dotenv').config();
+const path = require('path');
 
 /**
  * Liste des variables d'environnement strictement obligatoires
@@ -9,6 +10,8 @@ const REQUIRED_ENV_VARS = ['BOT_TOKEN', 'ADMIN_TELEGRAM_ID'];
 function assertRequiredEnv() {
   const missing = REQUIRED_ENV_VARS.filter((key) => !process.env[key]);
   if (missing.length > 0) {
+    // On log une erreur claire plutôt que de laisser planter le process
+    // avec une stack trace incompréhensible pour l'utilisateur final.
     console.error(
       `❌ Variables d'environnement manquantes : ${missing.join(', ')}\n` +
         `→ Vérifiez votre fichier .env (ou la configuration Render) en vous basant sur .env.example`
@@ -94,26 +97,13 @@ const config = {
   adminGroupId: process.env.ADMIN_GROUP_ID ? String(process.env.ADMIN_GROUP_ID).trim() : null,
 
   // ─────────────────────────────────────────────
-  // Sofascore (API JSON publique, non officielle — scraping structuré)
-  // Aucune clé requise. Les pronostics sont CALCULÉS par
-  // src/services/predictionEngine.js (modèle de Poisson) à partir des
-  // vraies données de classement (buts marqués/encaissés, domicile/
-  // extérieur) récupérées sur Sofascore.
+  // Fichier de statistiques manuel (remplace toute API/scraping externe).
+  // Voir data/README.md pour le format et le guide de remplissage.
+  // Relu à chaque demande de pronostic (pas de cache, pas de redémarrage
+  // nécessaire après modification).
   // ─────────────────────────────────────────────
-  sofascore: {
-    baseUrl: 'https://api.sofascore.com/api/v1',
-    // Noms de compétitions ciblés (tels qu'affichés par Sofascore), résolus
-    // dynamiquement en IDs internes via /config/unique-tournaments.
-    // Modifiable via SOFASCORE_COMPETITIONS (séparés par des virgules).
-    competitions: (
-      process.env.SOFASCORE_COMPETITIONS ||
-      'Premier League,LaLiga,Serie A,Bundesliga,Ligue 1,UEFA Champions League'
-    )
-      .split(',')
-      .map((c) => c.trim())
-      .filter(Boolean),
-    // Fenêtre de matchs à venir interrogée (en jours).
-    lookaheadDays: Number(process.env.SOFASCORE_LOOKAHEAD_DAYS) || 4,
+  stats: {
+    filePath: process.env.STATS_FILE_PATH || path.join(__dirname, '..', '..', 'data', 'stats.json'),
   },
 
   // ─────────────────────────────────────────────
