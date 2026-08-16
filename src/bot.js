@@ -39,8 +39,7 @@ bot.hears(BUTTONS.ACCOUNT, accountHandler);
 // PARCOURS PREMIUM (Inline Keyboards)
 // ─────────────────────────────────────────────
 bot.action(/^premium:plan:(.+)$/, premiumHandler.selectPlan);
-bot.action(/^pay:method:([a-z_]+):(.+)$/, premiumHandler.selectMethod);
-bot.action(/^pay:confirm:([a-z_]+):(.+)$/, premiumHandler.confirmPaid);
+bot.action(/^pay:confirm:(.+)$/, premiumHandler.confirmPaid);
 bot.on('photo', premiumHandler.receiveProof);
 
 // ─────────────────────────────────────────────
