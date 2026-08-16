@@ -1,0 +1,38 @@
+{
+  "_README": "Voir data/README.md pour le guide complet de remplissage. Supprimez cette clé si vous voulez, elle est ignorée par le bot.",
+  "updated_at": "2026-08-16",
+  "competitions": {
+    "Ligue 1": {
+      "teams": {
+        "Paris Saint-Germain": {
+          "home": { "played": 2, "goals_for": 6, "goals_against": 1 },
+          "away": { "played": 1, "goals_for": 3, "goals_against": 0 }
+        },
+        "Marseille": {
+          "home": { "played": 1, "goals_for": 2, "goals_against": 1 },
+          "away": { "played": 2, "goals_for": 3, "goals_against": 2 }
+        },
+        "Lyon": {
+          "home": { "played": 2, "goals_for": 3, "goals_against": 2 },
+          "away": { "played": 1, "goals_for": 1, "goals_against": 1 }
+        },
+        "Monaco": {
+          "home": { "played": 1, "goals_for": 2, "goals_against": 0 },
+          "away": { "played": 2, "goals_for": 2, "goals_against": 3 }
+        }
+      },
+      "matches": [
+        {
+          "home_team": "Paris Saint-Germain",
+          "away_team": "Marseille",
+          "date": "2026-08-23T18:00:00Z"
+        },
+        {
+          "home_team": "Lyon",
+          "away_team": "Monaco",
+          "date": "2026-08-23T15:00:00Z"
+        }
+      ]
+    }
+  }
+}
