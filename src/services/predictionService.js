@@ -31,7 +31,7 @@ function getMarket(match, marketKey) {
 // ─────────────────────────────────────────────────────────────
 // EXTRACTION PAR CATÉGORIE
 // Chaque fonction renvoie soit { pick, confidencePct, raw } soit null
-// si l'API ne fournit pas assez de données pour cette catégorie.
+// si les données réelles sont insuffisantes pour cette catégorie.
 // ─────────────────────────────────────────────────────────────
 
 function extract1X2(match) {
@@ -84,7 +84,7 @@ function extractBTTS(match) {
 
 /**
  * "Total de buts" : agrège tous les marchés Over/Under de buts totaux
- * (over_25, over_35) réellement fournis par l'API, sans en inventer.
+ * (over_25, over_35) réellement calculés, sans en inventer.
  */
 function extractTotalGoals(match) {
   const marketDefs = [
@@ -112,7 +112,7 @@ function extractTotalGoals(match) {
 
 /**
  * "Over/Under" : sélectionne le meilleur pronostic Over/Under parmi tous
- * les marchés de buts (totaux ou par équipe) réellement disponibles.
+ * les marchés de buts (totaux ou par équipe) réellement calculés.
  */
 function extractOverUnder(match) {
   const marketDefs = [
@@ -143,13 +143,20 @@ function extractOverUnder(match) {
 }
 
 /**
- * "Score Exact" : cette API ne fournit structurellement aucun marché de
- * score exact (voir footballApi.js). On retourne donc toujours null ici,
- * ce qui déclenche le message d'indisponibilité prévu par le cahier des
- * charges — jamais un score inventé.
+ * "Score Exact" : dérivé du modèle de Poisson (predictionEngine.js) —
+ * le scoreline avec la plus forte probabilité dans la matrice calculée à
+ * partir des vraies données de classement. Si le match n'a pas pu être
+ * modélisé (historique insuffisant), le marché n'existe simplement pas
+ * dans prediction_per_market et cette fonction retourne null.
  */
-function extractExactScore(_match) {
-  return null;
+function extractExactScore(match) {
+  const m = match.prediction_per_market && match.prediction_per_market[MARKETS.EXACT_SCORE];
+  if (!m || typeof m.probability !== 'number' || !m.scoreline) return null;
+
+  const confidencePct = toConfidencePct(m.probability);
+  if (confidencePct === null) return null;
+
+  return { pick: m.scoreline, label: 'Score exact le plus probable', confidencePct, raw: m };
 }
 
 const EXTRACTORS = {
@@ -162,9 +169,8 @@ const EXTRACTORS = {
 };
 
 /**
- * Parcourt la liste de matchs renvoyée par l'API et sélectionne les
- * meilleurs pronostics exploitables pour une catégorie donnée, triés par
- * confiance décroissante.
+ * Parcourt la liste de matchs et sélectionne les meilleurs pronostics
+ * exploitables pour une catégorie donnée, triés par confiance décroissante.
  */
 function selectBestForCategory(matches, category, limit = 1) {
   const extractor = EXTRACTORS[category];
@@ -220,7 +226,7 @@ function formatPredictionMessage(match, category, extracted) {
     `🎯 <b>Marché</b>\n${categoryLabels[category] || category}\n\n` +
     `🔥 <b>Pronostic</b>\n${escapeHtml(pickLine)}\n\n` +
     `📊 <b>Confiance</b>\n${confidencePct}%\n\n` +
-    `📈 <b>Données API</b>\nAnalyse basée sur les statistiques et probabilités fournies par le modèle de pronostics.\n\n` +
+    `📈 <b>Modèle statistique</b>\nCalculé via un modèle de Poisson à partir des données réelles de classement (buts marqués/encaissés, domicile/extérieur).\n\n` +
     `━━━━━━━━━━━━━━\n` +
     `🤖 <i>Football Prediction Bot</i>\n\n` +
     `⚠️ <i>Estimation statistique, aucun résultat n'est garanti.</i>`
@@ -257,7 +263,7 @@ const NO_DATA_MESSAGES = {
   over_under: "❌ Données insuffisantes pour générer un pronostic Over/Under exploitable actuellement.",
   double_chance: "❌ Données insuffisantes pour générer un pronostic Double Chance exploitable actuellement.",
   score_exact:
-    "❌ Aucun score exact exploitable n'est disponible pour ce match avec les données actuelles de l'API.",
+    "❌ Historique de matchs insuffisant pour calculer un score exact fiable pour ce match.",
 };
 
 module.exports = {
