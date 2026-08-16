@@ -18,10 +18,6 @@ services:
         value: 0 8 * * *
       - key: DAILY_PREDICTIONS_COUNT
         value: 5
-      - key: SOFASCORE_COMPETITIONS
-        value: Premier League,LaLiga,Serie A,Bundesliga,Ligue 1,UEFA Champions League
-      - key: SOFASCORE_LOOKAHEAD_DAYS
-        value: 4
       - key: WAVE_PAY_LINK_BASE
         value: https://pay.wave.com/m/M_ci_knlRyepWBd4f/c/ci/?amount=
       # ⚠️ Secrets à saisir manuellement dans le dashboard Render
