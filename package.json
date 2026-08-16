@@ -9,7 +9,7 @@
     "install": "npm install --build-from-source=false || npm install"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": "18.0.0"
   },
   "keywords": [
     "telegram",
