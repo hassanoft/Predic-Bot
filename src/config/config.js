@@ -4,7 +4,7 @@ require('dotenv').config();
  * Liste des variables d'environnement strictement obligatoires
  * pour que le bot puisse démarrer correctement.
  */
-const REQUIRED_ENV_VARS = ['BOT_TOKEN', 'ADMIN_TELEGRAM_ID', 'FOOTBALL_DATA_API_KEY'];
+const REQUIRED_ENV_VARS = ['BOT_TOKEN', 'ADMIN_TELEGRAM_ID'];
 
 function assertRequiredEnv() {
   const missing = REQUIRED_ENV_VARS.filter((key) => !process.env[key]);
@@ -76,25 +76,6 @@ const PREMIUM_PLANS = {
 };
 
 /**
- * Moyens de paiement manuels.
- * numberEnvKey pointe vers la variable d'environnement contenant le numéro réel.
- */
-const PAYMENT_METHODS = {
-  mtn_momo: {
-    id: 'mtn_momo',
-    label: 'MTN Mobile Money',
-    emoji: '🔵',
-    numberEnvKey: 'MTN_MOMO_NUMBER',
-  },
-  wave: {
-    id: 'wave',
-    label: 'Wave',
-    emoji: '🟣',
-    numberEnvKey: 'WAVE_NUMBER',
-  },
-};
-
-/**
  * Catégories de pronostics et marchés correspondants.
  * Voir src/services/footballApi.js pour la structure réelle des données.
  */
@@ -113,24 +94,33 @@ const config = {
   adminGroupId: process.env.ADMIN_GROUP_ID ? String(process.env.ADMIN_GROUP_ID).trim() : null,
 
   // ─────────────────────────────────────────────
-  // football-data.org (fixtures + classements réels)
-  // Les pronostics eux-mêmes sont CALCULÉS par src/services/predictionEngine.js
-  // (modèle de Poisson) à partir de ces données réelles — cette API ne
-  // fournit ni cotes ni probabilités pré-match sur le plan gratuit.
+  // Sofascore (API JSON publique, non officielle — scraping structuré)
+  // Aucune clé requise. Les pronostics sont CALCULÉS par
+  // src/services/predictionEngine.js (modèle de Poisson) à partir des
+  // vraies données de classement (buts marqués/encaissés, domicile/
+  // extérieur) récupérées sur Sofascore.
   // ─────────────────────────────────────────────
-  footballData: {
-    apiKey: process.env.FOOTBALL_DATA_API_KEY,
-    baseUrl: 'https://api.football-data.org/v4',
-    // Compétitions couvertes par le plan gratuit (TIER_ONE) parmi les plus
-    // suivies en Côte d'Ivoire. Modifiable via FOOTBALL_DATA_COMPETITIONS
-    // (codes séparés par des virgules), sans espaces.
-    competitions: (process.env.FOOTBALL_DATA_COMPETITIONS || 'PL,PD,SA,BL1,FL1,CL')
+  sofascore: {
+    baseUrl: 'https://api.sofascore.com/api/v1',
+    // Noms de compétitions ciblés (tels qu'affichés par Sofascore), résolus
+    // dynamiquement en IDs internes via /config/unique-tournaments.
+    // Modifiable via SOFASCORE_COMPETITIONS (séparés par des virgules).
+    competitions: (
+      process.env.SOFASCORE_COMPETITIONS ||
+      'Premier League,LaLiga,Serie A,Bundesliga,Ligue 1,UEFA Champions League'
+    )
       .split(',')
       .map((c) => c.trim())
       .filter(Boolean),
     // Fenêtre de matchs à venir interrogée (en jours).
-    lookaheadDays: Number(process.env.FOOTBALL_DATA_LOOKAHEAD_DAYS) || 4,
+    lookaheadDays: Number(process.env.SOFASCORE_LOOKAHEAD_DAYS) || 4,
   },
+
+  // ─────────────────────────────────────────────
+  // Paiement Wave (lien direct, montant ajouté en query param)
+  // ─────────────────────────────────────────────
+  wavePayLinkBase:
+    process.env.WAVE_PAY_LINK_BASE || 'https://pay.wave.com/m/M_ci_knlRyepWBd4f/c/ci/?amount=',
 
   databasePath: process.env.DATABASE_PATH && process.env.DATABASE_PATH.trim() !== ''
     ? process.env.DATABASE_PATH
@@ -145,7 +135,6 @@ const config = {
   nodeEnv: process.env.NODE_ENV || 'development',
 
   premiumPlans: PREMIUM_PLANS,
-  paymentMethods: PAYMENT_METHODS,
   categories: CATEGORIES,
 };
 
