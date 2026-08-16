@@ -18,10 +18,12 @@ services:
         value: 0 8 * * *
       - key: DAILY_PREDICTIONS_COUNT
         value: 5
-      - key: FOOTBALL_DATA_COMPETITIONS
-        value: PL,PD,SA,BL1,FL1,CL
-      - key: FOOTBALL_DATA_LOOKAHEAD_DAYS
+      - key: SOFASCORE_COMPETITIONS
+        value: Premier League,LaLiga,Serie A,Bundesliga,Ligue 1,UEFA Champions League
+      - key: SOFASCORE_LOOKAHEAD_DAYS
         value: 4
+      - key: WAVE_PAY_LINK_BASE
+        value: https://pay.wave.com/m/M_ci_knlRyepWBd4f/c/ci/?amount=
       # ⚠️ Secrets à saisir manuellement dans le dashboard Render
       # (Environment > Add Environment Variable) — ne jamais les committer.
       - key: BOT_TOKEN
@@ -29,12 +31,6 @@ services:
       - key: ADMIN_TELEGRAM_ID
         sync: false
       - key: ADMIN_GROUP_ID
-        sync: false
-      - key: FOOTBALL_DATA_API_KEY
-        sync: false
-      - key: MTN_MOMO_NUMBER
-        sync: false
-      - key: WAVE_NUMBER
         sync: false
     disk:
       name: football-bot-data
