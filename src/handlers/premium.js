@@ -4,10 +4,13 @@ const sessions = require('../state/paymentSessions');
 const {
   mainMenuKeyboard,
   premiumPlansKeyboard,
-  paymentMethodsKeyboard,
   paymentConfirmKeyboard,
   adminValidationKeyboard,
 } = require('../keyboards/mainKeyboard');
+
+function buildWavePayLink(amount) {
+  return `${config.wavePayLinkBase}${amount}`;
+}
 
 async function showPremiumMenu(ctx) {
   const message =
@@ -20,73 +23,62 @@ async function showPremiumMenu(ctx) {
     `30 jours — 6 000 FCFA\n` +
     `90 jours — 13 000 FCFA\n` +
     `1 an — 30 000 FCFA\n\n` +
+    `💳 Paiement par Wave uniquement.\n\n` +
     `⚠️ <i>Les pronostics restent des estimations statistiques, aucun résultat n'est garanti.</i>`;
 
   await ctx.reply(message, { parse_mode: 'HTML', ...premiumPlansKeyboard() });
 }
 
+/**
+ * Formule choisie -> on affiche directement le lien de paiement Wave avec
+ * le montant pré-rempli (plus d'étape de choix de moyen de paiement,
+ * Wave étant désormais le seul disponible).
+ */
 async function selectPlan(ctx) {
   const planId = ctx.match[1];
   const plan = config.premiumPlans[planId];
   if (!plan) return ctx.answerCbQuery('Formule introuvable.');
 
   await ctx.answerCbQuery();
-  sessions.setDraft(ctx.from.id, { planId });
+  sessions.setDraft(ctx.from.id, { planId, awaitingProof: false });
+
+  const payLink = buildWavePayLink(plan.price);
 
   const message =
-    `💳 <b>CHOISISSEZ VOTRE MOYEN DE PAIEMENT</b>\n\n` +
-    `Formule sélectionnée : <b>${plan.label}</b> — ${plan.price} FCFA`;
-
-  await ctx.reply(message, { parse_mode: 'HTML', ...paymentMethodsKeyboard(planId) });
-}
-
-async function selectMethod(ctx) {
-  const [, methodId, planId] = ctx.match;
-  const method = config.paymentMethods[methodId];
-  const plan = config.premiumPlans[planId];
-  if (!method || !plan) return ctx.answerCbQuery('Option invalide.');
-
-  await ctx.answerCbQuery();
-  sessions.setDraft(ctx.from.id, { planId, methodId });
-
-  const number = process.env[method.numberEnvKey] || 'Numéro non configuré — contactez l’administrateur';
-
-  const message =
-    `💳 <b>PAIEMENT</b>\n\n` +
+    `💳 <b>PAIEMENT — WAVE</b>\n\n` +
     `Formule :\n${plan.label}\n\n` +
     `Montant :\n${plan.price} FCFA\n\n` +
-    `${method.emoji} <b>${method.label}</b>\n` +
-    `Numéro : <code>${number}</code>\n\n` +
-    `Effectuez le paiement sur le numéro indiqué.\n\n` +
+    `👉 Cliquez pour payer directement avec Wave :\n${payLink}\n\n` +
     `Après paiement, cliquez sur le bouton ci-dessous.`;
 
-  await ctx.reply(message, { parse_mode: 'HTML', ...paymentConfirmKeyboard(methodId, planId) });
+  await ctx.reply(message, {
+    parse_mode: 'HTML',
+    disable_web_page_preview: true,
+    ...paymentConfirmKeyboard(planId),
+  });
 }
 
 async function confirmPaid(ctx) {
-  const [, methodId, planId] = ctx.match;
-  const method = config.paymentMethods[methodId];
+  const planId = ctx.match[1];
   const plan = config.premiumPlans[planId];
-  if (!method || !plan) return ctx.answerCbQuery('Option invalide.');
+  if (!plan) return ctx.answerCbQuery('Formule invalide.');
 
   await ctx.answerCbQuery();
-  sessions.setDraft(ctx.from.id, { planId, methodId, awaitingProof: true });
+  sessions.setDraft(ctx.from.id, { planId, awaitingProof: true });
 
-  await ctx.reply('📸 Envoyez votre preuve de paiement (capture d’écran ou photo du reçu).');
+  await ctx.reply('📸 Envoyez votre preuve de paiement (capture d’écran Wave).');
 }
 
 /**
  * Déclenché sur réception d'une photo. On ne traite que si l'utilisateur
- * a un paiement en attente de preuve — sinon on ignore silencieusement
- * (ce n'est pas forcément lié à un paiement).
+ * a un paiement en attente de preuve — sinon on ignore silencieusement.
  */
 async function receiveProof(ctx) {
   const draft = sessions.getDraft(ctx.from.id);
   if (!draft || !draft.awaitingProof) return; // pas de flux de paiement en cours
 
   const plan = config.premiumPlans[draft.planId];
-  const method = config.paymentMethods[draft.methodId];
-  if (!plan || !method) {
+  if (!plan) {
     sessions.clearDraft(ctx.from.id);
     return ctx.reply('⚠️ Session de paiement expirée, merci de recommencer via 💎 PREMIUM.', mainMenuKeyboard());
   }
@@ -94,7 +86,7 @@ async function receiveProof(ctx) {
   const photos = ctx.message.photo;
   const fileId = photos[photos.length - 1].file_id; // meilleure résolution
 
-  const payment = paymentService.createPaymentRequest(ctx.from.id, plan.id, plan.price, method.id, fileId);
+  const payment = paymentService.createPaymentRequest(ctx.from.id, plan.id, plan.price, 'wave', fileId);
   sessions.clearDraft(ctx.from.id);
 
   await ctx.reply(
@@ -102,10 +94,10 @@ async function receiveProof(ctx) {
     mainMenuKeyboard()
   );
 
-  await notifyAdminOfPayment(ctx, payment, plan, method);
+  await notifyAdminOfPayment(ctx, payment, plan);
 }
 
-async function notifyAdminOfPayment(ctx, payment, plan, method) {
+async function notifyAdminOfPayment(ctx, payment, plan) {
   const username = ctx.from.username ? `@${ctx.from.username}` : '(pas de username)';
 
   const caption =
@@ -114,7 +106,7 @@ async function notifyAdminOfPayment(ctx, payment, plan, method) {
     `🆔 Telegram ID : <code>${ctx.from.id}</code>\n\n` +
     `💎 Formule :\n${plan.label}\n\n` +
     `💰 Montant :\n${plan.price} FCFA\n\n` +
-    `📱 Méthode :\n${method.emoji} ${method.label}`;
+    `📱 Méthode :\n🟣 Wave`;
 
   const destinations = [config.adminTelegramId];
 
@@ -135,7 +127,6 @@ async function notifyAdminOfPayment(ctx, payment, plan, method) {
 module.exports = {
   showPremiumMenu,
   selectPlan,
-  selectMethod,
   confirmPaid,
   receiveProof,
 };
