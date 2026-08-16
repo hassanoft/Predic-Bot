@@ -46,18 +46,8 @@ function premiumPlansKeyboard() {
   return Markup.inlineKeyboard([...standardRow.map((b) => [b]), ...exactRow.map((b) => [b])]);
 }
 
-function paymentMethodsKeyboard(planId) {
-  const methods = config.paymentMethods;
-  const buttons = Object.values(methods).map((m) =>
-    Markup.button.callback(`${m.emoji} ${m.label}`, `pay:method:${m.id}:${planId}`)
-  );
-  return Markup.inlineKeyboard(buttons.map((b) => [b]));
-}
-
-function paymentConfirmKeyboard(methodId, planId) {
-  return Markup.inlineKeyboard([
-    [Markup.button.callback("✅ J'AI PAYÉ", `pay:confirm:${methodId}:${planId}`)],
-  ]);
+function paymentConfirmKeyboard(planId) {
+  return Markup.inlineKeyboard([[Markup.button.callback("✅ J'AI PAYÉ", `pay:confirm:${planId}`)]]);
 }
 
 function adminValidationKeyboard(paymentId) {
@@ -83,7 +73,6 @@ module.exports = {
   BUTTON_TO_CATEGORY,
   mainMenuKeyboard,
   premiumPlansKeyboard,
-  paymentMethodsKeyboard,
   paymentConfirmKeyboard,
   adminValidationKeyboard,
   broadcastConfirmKeyboard,
