@@ -4,13 +4,11 @@ require('dotenv').config();
  * Liste des variables d'environnement strictement obligatoires
  * pour que le bot puisse démarrer correctement.
  */
-const REQUIRED_ENV_VARS = ['BOT_TOKEN', 'ADMIN_TELEGRAM_ID', 'RAPIDAPI_KEY'];
+const REQUIRED_ENV_VARS = ['BOT_TOKEN', 'ADMIN_TELEGRAM_ID', 'FOOTBALL_DATA_API_KEY'];
 
 function assertRequiredEnv() {
   const missing = REQUIRED_ENV_VARS.filter((key) => !process.env[key]);
   if (missing.length > 0) {
-    // On log une erreur claire plutôt que de laisser planter le process
-    // avec une stack trace incompréhensible pour l'utilisateur final.
     console.error(
       `❌ Variables d'environnement manquantes : ${missing.join(', ')}\n` +
         `→ Vérifiez votre fichier .env (ou la configuration Render) en vous basant sur .env.example`
@@ -82,23 +80,11 @@ const PREMIUM_PLANS = {
  * numberEnvKey pointe vers la variable d'environnement contenant le numéro réel.
  */
 const PAYMENT_METHODS = {
-  orange_money: {
-    id: 'orange_money',
-    label: 'Orange Money',
-    emoji: '🟠',
-    numberEnvKey: 'ORANGE_MONEY_NUMBER',
-  },
   mtn_momo: {
     id: 'mtn_momo',
     label: 'MTN Mobile Money',
     emoji: '🔵',
     numberEnvKey: 'MTN_MOMO_NUMBER',
-  },
-  moov_money: {
-    id: 'moov_money',
-    label: 'Moov Money',
-    emoji: '🔴',
-    numberEnvKey: 'MOOV_MONEY_NUMBER',
   },
   wave: {
     id: 'wave',
@@ -109,7 +95,7 @@ const PAYMENT_METHODS = {
 };
 
 /**
- * Catégories de pronostics et marchés API correspondants.
+ * Catégories de pronostics et marchés correspondants.
  * Voir src/services/footballApi.js pour la structure réelle des données.
  */
 const CATEGORIES = {
@@ -126,10 +112,25 @@ const config = {
   adminTelegramId: String(process.env.ADMIN_TELEGRAM_ID || '').trim(),
   adminGroupId: process.env.ADMIN_GROUP_ID ? String(process.env.ADMIN_GROUP_ID).trim() : null,
 
-  rapidApiKey: process.env.RAPIDAPI_KEY,
-  rapidApiHost: process.env.RAPIDAPI_HOST || 'football-prediction-api.p.rapidapi.com',
-  // On ne garde que la base de l'URL : le service ajoute lui-même les query params.
-  rapidApiBaseUrl: 'https://football-prediction-api.p.rapidapi.com/api/v2',
+  // ─────────────────────────────────────────────
+  // football-data.org (fixtures + classements réels)
+  // Les pronostics eux-mêmes sont CALCULÉS par src/services/predictionEngine.js
+  // (modèle de Poisson) à partir de ces données réelles — cette API ne
+  // fournit ni cotes ni probabilités pré-match sur le plan gratuit.
+  // ─────────────────────────────────────────────
+  footballData: {
+    apiKey: process.env.FOOTBALL_DATA_API_KEY,
+    baseUrl: 'https://api.football-data.org/v4',
+    // Compétitions couvertes par le plan gratuit (TIER_ONE) parmi les plus
+    // suivies en Côte d'Ivoire. Modifiable via FOOTBALL_DATA_COMPETITIONS
+    // (codes séparés par des virgules), sans espaces.
+    competitions: (process.env.FOOTBALL_DATA_COMPETITIONS || 'PL,PD,SA,BL1,FL1,CL')
+      .split(',')
+      .map((c) => c.trim())
+      .filter(Boolean),
+    // Fenêtre de matchs à venir interrogée (en jours).
+    lookaheadDays: Number(process.env.FOOTBALL_DATA_LOOKAHEAD_DAYS) || 4,
+  },
 
   databasePath: process.env.DATABASE_PATH && process.env.DATABASE_PATH.trim() !== ''
     ? process.env.DATABASE_PATH
