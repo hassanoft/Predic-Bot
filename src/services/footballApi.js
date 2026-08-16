@@ -1,70 +1,35 @@
 const axios = require('axios');
 const config = require('../config/config');
+const { computeMatchPredictions } = require('./predictionEngine');
 
 /**
  * ────────────────────────────────────────────────────────────────────────
- * STRUCTURE RÉELLE DE L'API "Football Prediction" (Boggio-Analytics, v2)
+ * football-data.org (v4) — STRUCTURE RÉELLE UTILISÉE ICI
  * ────────────────────────────────────────────────────────────────────────
- * Endpoint utilisé : GET /api/v2/predictions
- *   Query params optionnels :
- *     - iso_date   : "YYYY-MM-DD" (jour démarrant à 00:00 heure de Londres)
- *     - federation : "UEFA" | "CAF" | "CONCACAF" | "CONMEBOL" | "AFC" | "OFC"
- *     - market     : "classic" (défaut) | "btts" | "over_25" | "over_35" |
- *                    "home_over_05" | "home_over_15" | "away_over_05" | "away_over_15"
- *   Réponse : { "data": [ <PredictionObject>, ... ] }
+ * Auth : header "X-Auth-Token: <clé>"
+ * Plan gratuit (TIER_ONE) : 10 requêtes/minute, 12 compétitions, PAS de
+ * cotes ni de probabilités pré-match (add-on payant, et même payant ce
+ * sont des cotes moyennes POST-match — inutilisables pour prédire).
  *
- * <PredictionObject> (champs réellement documentés par le fournisseur) :
- * {
- *   id: number,
- *   is_expired: boolean,
- *   competition_cluster: string,   // pays
- *   competition_name: string,      // ligue
- *   federation: string,
- *   season: string,
- *   start_date: string,            // ISO, heure Londres
- *   last_update_at: string,
- *   home_team: string,
- *   away_team: string,
- *   home_strength: number,
- *   away_strength: number,
- *   distance_between_teams: number,
- *   stadium_capacity: number,
- *   field_length: number,
- *   field_width: number,
- *   result: string | null,         // rempli seulement après le match
- *   available_markets: string[],   // marchés réellement disponibles pour CE match
- *   prediction_per_market: {
- *     classic: {
- *       odds: { "1": n|null, "X": n|null, "2": n|null, "1X": n|null, "X2": n|null, "12": n|null },
- *       probabilities: { "1": n, "X": n, "2": n, "1X": n, "X2": n, "12": n },
- *       status: "pending" | "won" | "lost" | "postponed",
- *       prediction: "1" | "X" | "2"
- *     },
- *     btts: { odds: {yes,no}, probabilities: {yes,no}, status, prediction: "yes"|"no" },
- *     over_25: { odds: {yes,no}, probabilities: {yes,no}, status, prediction: "yes"|"no" },
- *     over_35: { ... même forme ... },
- *     home_over_05 / home_over_15 / away_over_05 / away_over_15: { ... même forme ... }
- *   }
- * }
+ * 1) GET /v4/matches?competitions=PL,PD,...&dateFrom=YYYY-MM-DD&dateTo=YYYY-MM-DD
+ *    → { matches: [{ id, utcDate, status, competition:{id,name,code},
+ *                     area:{name}, homeTeam:{id,name}, awayTeam:{id,name} }] }
+ *    Filtre "competitions" confirmé sur la ressource principale /v4/matches.
+ *    On filtre nous-mêmes sur status ∈ {SCHEDULED, TIMED} (à venir, non joués).
  *
- * ⚠️ IMPORTANT — CETTE API NE FOURNIT AUCUN MARCHÉ "SCORE EXACT".
- * Les marchés disponibles sont strictement limités à la liste ci-dessus
- * (confirmé par la documentation officielle du fournisseur et par
- * /api/v2/list-markets). Il n'existe donc structurellement aucune donnée
- * permettant de générer un score exact fiable à partir de cette API.
- * → predictionService.js retourne systématiquement le message
- *   "Aucun score exact exploitable" pour cette catégorie, conformément à
- *   la règle NE PAS INVENTER LES DONNÉES. Si un jour l'API évolue et
- *   expose un marché de score exact, il suffira d'ajouter son nom ici.
+ * 2) GET /v4/competitions/{code}/standings
+ *    → { standings: [
+ *          { type: "TOTAL", table: [...] },
+ *          { type: "HOME",  table: [{ team:{id,name}, playedGames, goalsFor, goalsAgainst, ... }] },
+ *          { type: "AWAY",  table: [...] }
+ *        ] }
+ *    Les tables HOME/AWAY donnent, PAR ÉQUIPE, les buts marqués/encaissés
+ *    réels à domicile et à l'extérieur — exactement ce qu'il faut pour le
+ *    modèle de Poisson (src/services/predictionEngine.js).
  *
- * Le champ "market" dans la query ne semble filtrer que les MATCHS renvoyés
- * (uniquement ceux où ce marché est disponible), pas la forme de la
- * réponse : prediction_per_market contient déjà tous les marchés
- * disponibles pour le match. On interroge donc l'API une seule fois par
- * fenêtre de matchs, puis on filtre/sélectionne côté serveur pour chaque
- * catégorie. Si un compte RapidAPI renvoie une forme différente, les
- * fonctions d'extraction de predictionService.js sont conçues pour
- * échouer proprement (retour "données insuffisantes") plutôt que d'inventer.
+ * Aucune probabilité n'est fournie par cette API : elle est CALCULÉE côté
+ * bot à partir de ces données réelles. Voir predictionEngine.js pour le
+ * détail du modèle et la garde-fou anti-invention de données.
  * ────────────────────────────────────────────────────────────────────────
  */
 
@@ -77,131 +42,201 @@ const MARKETS = {
   HOME_OVER_15: 'home_over_15',
   AWAY_OVER_05: 'away_over_05',
   AWAY_OVER_15: 'away_over_15',
+  EXACT_SCORE: 'exact_score',
 };
 
+const UPCOMING_STATUSES = new Set(['SCHEDULED', 'TIMED']);
+
 const client = axios.create({
-  baseURL: config.rapidApiBaseUrl,
+  baseURL: config.footballData.baseUrl,
   timeout: 10000,
   headers: {
-    'Content-Type': 'application/json',
-    'x-rapidapi-host': config.rapidApiHost,
-    'x-rapidapi-key': config.rapidApiKey,
+    'X-Auth-Token': config.footballData.apiKey,
   },
 });
 
-// Petit cache mémoire pour ménager le quota RapidAPI (les plans gratuits
-// sont très limités en nombre d'appels par mois).
-const cache = new Map();
-const CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes
+// ─────────────────────────────────────────────
+// Limiteur de débit simple : le plan gratuit autorise 10 req/min.
+// On espace les appels pour ne jamais s'en approcher.
+// ─────────────────────────────────────────────
+let lastCallAt = 0;
+const MIN_INTERVAL_MS = 6500; // ~9 requêtes/minute max, marge de sécurité
 
-function getCacheKey(params) {
-  return JSON.stringify(params || {});
+async function throttledGet(url, opts) {
+  const wait = Math.max(0, MIN_INTERVAL_MS - (Date.now() - lastCallAt));
+  if (wait > 0) await new Promise((resolve) => setTimeout(resolve, wait));
+  lastCallAt = Date.now();
+  return client.get(url, opts);
 }
 
-function getFromCache(key) {
+// ─────────────────────────────────────────────
+// Cache mémoire : les classements changent peu (cache long), les matchs
+// programmés un peu plus souvent (cache court).
+// ─────────────────────────────────────────────
+const cache = new Map();
+const STANDINGS_TTL_MS = 6 * 60 * 60 * 1000; // 6h
+const MATCHES_TTL_MS = 20 * 60 * 1000; // 20 min
+
+function cacheGet(key, ttlMs) {
   const entry = cache.get(key);
   if (!entry) return null;
-  if (Date.now() - entry.timestamp > CACHE_TTL_MS) {
+  if (Date.now() - entry.timestamp > ttlMs) {
     cache.delete(key);
     return null;
   }
-  return entry.data;
+  return entry.value;
 }
 
-function setCache(key, data) {
-  cache.set(key, { data, timestamp: Date.now() });
+function cacheSet(key, value) {
+  cache.set(key, { value, timestamp: Date.now() });
+}
+
+function isoDate(date) {
+  return date.toISOString().slice(0, 10);
+}
+
+async function fetchStandings(competitionCode) {
+  const cacheKey = `standings:${competitionCode}`;
+  const cached = cacheGet(cacheKey, STANDINGS_TTL_MS);
+  if (cached) return cached;
+
+  const response = await throttledGet(`/competitions/${competitionCode}/standings`);
+  const groups = response.data && response.data.standings;
+  if (!Array.isArray(groups)) return null;
+
+  const homeTable = (groups.find((g) => g.type === 'HOME') || {}).table || [];
+  const awayTable = (groups.find((g) => g.type === 'AWAY') || {}).table || [];
+
+  const result = { homeTable, awayTable };
+  cacheSet(cacheKey, result);
+  return result;
+}
+
+async function fetchUpcomingMatches() {
+  const competitions = config.footballData.competitions;
+  const cacheKey = `matches:${competitions.join(',')}`;
+  const cached = cacheGet(cacheKey, MATCHES_TTL_MS);
+  if (cached) return cached;
+
+  const today = new Date();
+  const to = new Date(today.getTime() + config.footballData.lookaheadDays * 24 * 60 * 60 * 1000);
+
+  const response = await throttledGet('/matches', {
+    params: {
+      competitions: competitions.join(','),
+      dateFrom: isoDate(today),
+      dateTo: isoDate(to),
+    },
+  });
+
+  const allMatches = Array.isArray(response.data && response.data.matches) ? response.data.matches : [];
+  const upcoming = allMatches.filter((m) => UPCOMING_STATUSES.has(m.status));
+
+  cacheSet(cacheKey, upcoming);
+  return upcoming;
 }
 
 /**
- * Récupère la liste des prochains matchs avec leurs pronostics.
- * @param {Object} options
- * @param {string} [options.federation] - ex: "UEFA"
- * @param {string} [options.isoDate] - "YYYY-MM-DD"
- * @param {boolean} [options.useCache=true]
- * @returns {Promise<{success:boolean, data?:Array, errorType?:string, message?:string}>}
+ * Convertit un match football-data.org + les classements de sa compétition
+ * en objet normalisé (même forme qu'auparavant : home_team, away_team,
+ * start_date, prediction_per_market...) afin que predictionService.js et
+ * les handlers n'aient presque rien à changer.
  */
-async function getUpcomingPredictions({ federation, isoDate, useCache = true } = {}) {
-  const params = {};
-  if (federation) params.federation = federation;
-  if (isoDate) params.iso_date = isoDate;
+function normalizeMatch(match, standings) {
+  const base = {
+    id: match.id,
+    is_expired: false,
+    competition_cluster: match.area ? match.area.name : null,
+    competition_name: match.competition ? match.competition.name : null,
+    federation: match.competition ? match.competition.code : null,
+    start_date: match.utcDate,
+    home_team: match.homeTeam && match.homeTeam.name ? match.homeTeam.name : 'Équipe à domicile',
+    away_team: match.awayTeam && match.awayTeam.name ? match.awayTeam.name : 'Équipe à l’extérieur',
+    prediction_per_market: null,
+  };
 
-  const cacheKey = getCacheKey(params);
-  if (useCache) {
-    const cached = getFromCache(cacheKey);
-    if (cached) return { success: true, data: cached, fromCache: true };
-  }
+  if (!standings || !match.homeTeam || !match.awayTeam) return base;
 
+  const computed = computeMatchPredictions({
+    homeTeamId: match.homeTeam.id,
+    awayTeamId: match.awayTeam.id,
+    homeTable: standings.homeTable,
+    awayTable: standings.awayTable,
+  });
+
+  if (!computed) return base; // données insuffisantes -> match ignoré plus loin
+
+  base.prediction_per_market = computed.markets;
+  base._model = computed.expectedGoals; // conservé pour audit éventuel, non affiché
+  return base;
+}
+
+/**
+ * Récupère les prochains matchs et calcule un pronostic statistique pour
+ * chacun (voir predictionEngine.js). Les matchs pour lesquels les données
+ * réelles sont insuffisantes sont exclus du résultat — jamais complétés
+ * par une valeur inventée.
+ */
+async function getUpcomingPredictions({ useCache = true } = {}) {
   try {
-    const response = await client.get('/predictions', { params });
+    if (!useCache) cache.clear();
 
-    // Réponse vide ou JSON invalide / inattendu.
-    if (!response || typeof response.data !== 'object' || response.data === null) {
+    const rawMatches = await fetchUpcomingMatches();
+    if (rawMatches.length === 0) {
       return {
         success: false,
-        errorType: 'invalid_response',
-        message: "Réponse invalide reçue de l'API de pronostics.",
+        errorType: 'empty',
+        message: 'Aucun match à venir actuellement pour les compétitions suivies.',
       };
     }
 
-    const matches = Array.isArray(response.data.data) ? response.data.data : null;
+    // On ne récupère chaque classement qu'une seule fois par compétition concernée.
+    const competitionCodes = [
+      ...new Set(rawMatches.map((m) => m.competition && m.competition.code).filter(Boolean)),
+    ];
 
-    if (!matches) {
-      return {
-        success: false,
-        errorType: 'unexpected_format',
-        message: "Le format de la réponse de l'API a changé ou est inattendu.",
-      };
+    const standingsByCompetition = {};
+    for (const code of competitionCodes) {
+      try {
+        standingsByCompetition[code] = await fetchStandings(code);
+      } catch (err) {
+        console.error(`⚠️ Classement indisponible pour la compétition ${code} :`, err.message);
+        standingsByCompetition[code] = null;
+      }
     }
+
+    const matches = rawMatches
+      .map((m) => normalizeMatch(m, standingsByCompetition[m.competition && m.competition.code]))
+      .filter((m) => m.prediction_per_market !== null);
 
     if (matches.length === 0) {
       return {
         success: false,
         errorType: 'empty',
-        message: 'Aucun match disponible actuellement pour cette période.',
+        message: 'Données de classement insuffisantes pour calculer un pronostic fiable sur les matchs à venir.',
       };
     }
 
-    setCache(cacheKey, matches);
-    return { success: true, data: matches, fromCache: false };
-  } catch (error) {
-    return handleApiError(error);
-  }
-}
-
-/**
- * Récupère les pronostics pour un match précis (par ID de fixture).
- */
-async function getPredictionById(matchId) {
-  try {
-    const response = await client.get(`/predictions/${matchId}`);
-    const data = response.data && response.data.data ? response.data.data : response.data;
-
-    if (!data) {
-      return { success: false, errorType: 'empty', message: 'Aucune donnée pour ce match.' };
-    }
-
-    return { success: true, data };
+    return { success: true, data: matches };
   } catch (error) {
     return handleApiError(error);
   }
 }
 
 function handleApiError(error) {
-  // Timeout réseau
   if (error.code === 'ECONNABORTED') {
     return {
       success: false,
       errorType: 'timeout',
-      message: "Le service de pronostics met trop de temps à répondre. Réessayez dans un instant.",
+      message: 'Le service de données football met trop de temps à répondre. Réessayez dans un instant.',
     };
   }
 
-  // Pas de réponse du tout (API indisponible / DNS / réseau)
   if (!error.response) {
     return {
       success: false,
       errorType: 'unavailable',
-      message: 'Le service de pronostics est momentanément indisponible.',
+      message: 'Le service de données football est momentanément indisponible.',
     };
   }
 
@@ -211,17 +246,16 @@ function handleApiError(error) {
     return {
       success: false,
       errorType: 'rate_limited',
-      message: 'Limite de requêtes RapidAPI atteinte. Réessayez plus tard.',
+      message: 'Limite de requêtes football-data.org atteinte. Réessayez dans une minute.',
     };
   }
 
   if (status === 401 || status === 403) {
-    // On ne journalise jamais la clé elle-même, uniquement le code d'erreur.
-    console.error('❌ Authentification RapidAPI refusée (vérifier RAPIDAPI_KEY / abonnement).');
+    console.error('❌ Authentification football-data.org refusée (vérifier FOOTBALL_DATA_API_KEY).');
     return {
       success: false,
       errorType: 'auth_error',
-      message: "Le service de pronostics n'est pas correctement configuré.",
+      message: "Le service de données football n'est pas correctement configuré.",
     };
   }
 
@@ -236,12 +270,11 @@ function handleApiError(error) {
   return {
     success: false,
     errorType: 'http_error',
-    message: `Erreur inattendue du service de pronostics (code ${status}).`,
+    message: `Erreur inattendue du service de données football (code ${status}).`,
   };
 }
 
 module.exports = {
   MARKETS,
   getUpcomingPredictions,
-  getPredictionById,
 };
