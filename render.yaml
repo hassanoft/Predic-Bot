@@ -18,8 +18,10 @@ services:
         value: 0 8 * * *
       - key: DAILY_PREDICTIONS_COUNT
         value: 5
-      - key: RAPIDAPI_HOST
-        value: football-prediction-api.p.rapidapi.com
+      - key: FOOTBALL_DATA_COMPETITIONS
+        value: PL,PD,SA,BL1,FL1,CL
+      - key: FOOTBALL_DATA_LOOKAHEAD_DAYS
+        value: 4
       # ⚠️ Secrets à saisir manuellement dans le dashboard Render
       # (Environment > Add Environment Variable) — ne jamais les committer.
       - key: BOT_TOKEN
@@ -28,13 +30,9 @@ services:
         sync: false
       - key: ADMIN_GROUP_ID
         sync: false
-      - key: RAPIDAPI_KEY
-        sync: false
-      - key: ORANGE_MONEY_NUMBER
+      - key: FOOTBALL_DATA_API_KEY
         sync: false
       - key: MTN_MOMO_NUMBER
-        sync: false
-      - key: MOOV_MONEY_NUMBER
         sync: false
       - key: WAVE_NUMBER
         sync: false
