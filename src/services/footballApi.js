@@ -253,8 +253,8 @@ function normalizeMatch(event, standingsInfo) {
     competition_name: uniqueTournament ? uniqueTournament.name : event.tournament ? event.tournament.name : null,
     federation: null,
     start_date: event.startTimestamp ? new Date(event.startTimestamp * 1000).toISOString() : null,
-    home_team: event.homeTeam && event.homeTeam.name ? event.homeTeam.name : 'Équipe à domicile',
-    away_team: event.awayTeam && event.awayTeam.name ? event.awayTeam.name : 'Équipe à l'extérieur',
+    home_team: event.homeTeam && event.homeTeam.name ? event.homeTeam.name : "Équipe à domicile",
+    away_team: event.awayTeam && event.awayTeam.name ? event.awayTeam.name : "Équipe à l'extérieur",
     prediction_per_market: null,
   };
 
