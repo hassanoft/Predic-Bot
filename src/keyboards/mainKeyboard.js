@@ -2,11 +2,7 @@ const { Markup } = require('telegraf');
 const config = require('../config/config');
 
 const BUTTONS = {
-  ONE_X_TWO: '⚽ 1X2',
-  TOTAL_GOALS: '⚽ TOTAL DE BUT',
-  BTTS: '🎯 BTTS',
-  OVER_UNDER: '📊 OVER/UNDER',
-  DOUBLE_CHANCE: '🛡 DOUBLE CHANCE',
+  PRONOSTICS: '🎫 PRONOSTICS',
   EXACT_SCORE: '🔢 SCORE EXACT',
   PREMIUM: '💎 PREMIUM',
   ACCOUNT: '👤 MON COMPTE',
@@ -14,24 +10,27 @@ const BUTTONS = {
 };
 
 // Association bouton → catégorie interne (voir predictionService.js)
+// Seul SCORE EXACT garde un flux "1 catégorie -> 1 match" ; PRONOSTICS a son
+// propre flux dédié (voir handlers/combo.js).
 const BUTTON_TO_CATEGORY = {
-  [BUTTONS.ONE_X_TWO]: '1x2',
-  [BUTTONS.TOTAL_GOALS]: 'total_buts',
-  [BUTTONS.BTTS]: 'btts',
-  [BUTTONS.OVER_UNDER]: 'over_under',
-  [BUTTONS.DOUBLE_CHANCE]: 'double_chance',
   [BUTTONS.EXACT_SCORE]: 'score_exact',
 };
 
 function mainMenuKeyboard() {
   return Markup.keyboard([
-    [BUTTONS.ONE_X_TWO, BUTTONS.TOTAL_GOALS],
-    [BUTTONS.BTTS, BUTTONS.OVER_UNDER],
-    [BUTTONS.DOUBLE_CHANCE, BUTTONS.EXACT_SCORE],
+    [BUTTONS.PRONOSTICS, BUTTONS.EXACT_SCORE],
     [BUTTONS.PREMIUM, BUTTONS.ACCOUNT],
-  ])
-    .resize()
-    .persistent();
+  ]).resize();
+}
+
+// Tailles de combiné proposées à l'utilisateur.
+const COMBO_SIZES = [5, 10, 15, 20];
+
+function comboSizeKeyboard() {
+  const buttons = COMBO_SIZES.map((n) => Markup.button.callback(`${n} matchs`, `combo:size:${n}`));
+  const rows = [];
+  for (let i = 0; i < buttons.length; i += 2) rows.push(buttons.slice(i, i + 2));
+  return Markup.inlineKeyboard(rows);
 }
 
 function premiumPlansKeyboard() {
@@ -71,7 +70,9 @@ function broadcastConfirmKeyboard() {
 module.exports = {
   BUTTONS,
   BUTTON_TO_CATEGORY,
+  COMBO_SIZES,
   mainMenuKeyboard,
+  comboSizeKeyboard,
   premiumPlansKeyboard,
   paymentConfirmKeyboard,
   adminValidationKeyboard,
