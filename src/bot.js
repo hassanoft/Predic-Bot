@@ -5,6 +5,7 @@ const { runMigrations } = require('./database/migrations');
 const startHandler = require('./handlers/start');
 const accountHandler = require('./handlers/account');
 const predictionsHandler = require('./handlers/predictions');
+const comboHandler = require('./handlers/combo');
 const premiumHandler = require('./handlers/premium');
 const adminHandler = require('./handlers/admin');
 const { scheduleDailyPredictions } = require('./jobs/dailyPredictions');
@@ -28,9 +29,15 @@ bot.command('broadcast', adminHandler.broadcastStart);
 // ─────────────────────────────────────────────
 // MENU PRINCIPAL (Reply Keyboard)
 // ─────────────────────────────────────────────
+// SCORE EXACT garde son flux dédié à 1 match (inchangé).
 for (const [buttonText, category] of Object.entries(BUTTON_TO_CATEGORY)) {
   bot.hears(buttonText, (ctx) => predictionsHandler.handleCategory(ctx, category));
 }
+
+// PRONOSTICS regroupe désormais 1X2 / BTTS / Over-Under / Total de buts /
+// Double Chance en un flux unique de combiné aléatoire.
+bot.hears(BUTTONS.PRONOSTICS, comboHandler.showComboSizeMenu);
+bot.action(/^combo:size:(\d+)$/, comboHandler.generateCombo);
 
 bot.hears(BUTTONS.PREMIUM, premiumHandler.showPremiumMenu);
 bot.hears(BUTTONS.ACCOUNT, accountHandler);
