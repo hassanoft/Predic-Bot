@@ -1,327 +1,334 @@
 {
-  "_README": "Format compatible avec le moteur de pronostics : chaque équipe possède des statistiques domicile/extérieur avec au moins 3 matchs joués. Les matchs sont ceux identifiés dans les vidéos. Les statistiques utilisées comme base sont historiques : saison 2025/26 pour les équipes déjà présentes dans leur championnat, et championnat 2025/26 précédent pour certains promus. Le Mans et Troyes : Ligue 2 2025/26. Ipswich, Hull City et Coventry : Championship 2025/26. Deportivo, Málaga et Racing Santander ne disposent pas ici d'une table LaLiga 2025/26 correspondante ; ils sont donc conservés avec une base neutre 19/19 et 25-25 afin que le bot ne bloque pas, mais ces trois lignes doivent être remplacées par leurs statistiques réelles du championnat concerné si elles correspondent bien aux matchs des vidéos. Les heures de coup d'envoi non vérifiées sont à 00:00:00Z. Sources consultées : Statarea, Statbunker et World Soccer Data.",
   "updated_at": "2026-08-16",
   "competitions": {
-    "LaLiga": {
+    "La Liga": {
       "teams": {
-        "Alavés": {
+        "La Corogne": {
           "home": {
-            "played": 19,
-            "goals_for": 25,
-            "goals_against": 25
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
           },
           "away": {
-            "played": 13,
-            "goals_for": 7,
-            "goals_against": 19
-          }
-        },
-        "Athletic Club": {
-          "home": {
-            "played": 19,
-            "goals_for": 22,
-            "goals_against": 21
-          },
-          "away": {
-            "played": 14,
-            "goals_for": 15,
-            "goals_against": 25
-          }
-        },
-        "Atlético de Madrid": {
-          "home": {
-            "played": 19,
-            "goals_for": 39,
-            "goals_against": 17
-          },
-          "away": {
-            "played": 13,
-            "goals_for": 13,
-            "goals_against": 13
-          }
-        },
-        "Barcelona": {
-          "home": {
-            "played": 19,
-            "goals_for": 57,
-            "goals_against": 10
-          },
-          "away": {
-            "played": 14,
-            "goals_for": 31,
-            "goals_against": 23
-          }
-        },
-        "Celta": {
-          "home": {
-            "played": 19,
-            "goals_for": 29,
-            "goals_against": 28
-          },
-          "away": {
-            "played": 12,
-            "goals_for": 15,
-            "goals_against": 12
-          }
-        },
-        "Deportivo": {
-          "home": {
-            "played": 19,
-            "goals_for": 25,
-            "goals_against": 25
-          },
-          "away": {
-            "played": 19,
-            "goals_for": 25,
-            "goals_against": 25
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
           }
         },
         "Elche": {
           "home": {
-            "played": 19,
-            "goals_for": 30,
-            "goals_against": 19
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
           },
           "away": {
-            "played": 12,
-            "goals_for": 12,
-            "goals_against": 24
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
           }
         },
-        "Espanyol": {
+        "Atl. Madrid": {
           "home": {
-            "played": 19,
-            "goals_for": 21,
-            "goals_against": 24
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
           },
           "away": {
-            "played": 12,
-            "goals_for": 15,
-            "goals_against": 19
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
           }
         },
-        "Getafe": {
+        "Malaga": {
           "home": {
-            "played": 19,
-            "goals_for": 18,
-            "goals_against": 16
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
           },
           "away": {
-            "played": 12,
-            "goals_for": 10,
-            "goals_against": 18
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
           }
         },
-        "Girona": {
+        "Vallecano": {
           "home": {
-            "played": 19,
-            "goals_for": 21,
-            "goals_against": 27
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
           },
           "away": {
-            "played": 13,
-            "goals_for": 14,
-            "goals_against": 21
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
           }
         },
-        "Levante": {
+        "Alaves": {
           "home": {
-            "played": 19,
-            "goals_for": 26,
-            "goals_against": 28
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
           },
           "away": {
-            "played": 13,
-            "goals_for": 15,
-            "goals_against": 21
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
           }
         },
-        "Málaga": {
+        "Betis": {
           "home": {
-            "played": 19,
-            "goals_for": 25,
-            "goals_against": 25
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
           },
           "away": {
-            "played": 19,
-            "goals_for": 25,
-            "goals_against": 25
-          }
-        },
-        "Osasuna": {
-          "home": {
-            "played": 19,
-            "goals_for": 31,
-            "goals_against": 24
-          },
-          "away": {
-            "played": 13,
-            "goals_for": 8,
-            "goals_against": 15
-          }
-        },
-        "Racing Santander": {
-          "home": {
-            "played": 19,
-            "goals_for": 25,
-            "goals_against": 25
-          },
-          "away": {
-            "played": 19,
-            "goals_for": 25,
-            "goals_against": 25
-          }
-        },
-        "Rayo Vallecano": {
-          "home": {
-            "played": 19,
-            "goals_for": 24,
-            "goals_against": 15
-          },
-          "away": {
-            "played": 12,
-            "goals_for": 10,
-            "goals_against": 21
-          }
-        },
-        "Real Betis": {
-          "home": {
-            "played": 19,
-            "goals_for": 34,
-            "goals_against": 19
-          },
-          "away": {
-            "played": 13,
-            "goals_for": 17,
-            "goals_against": 17
-          }
-        },
-        "Real Madrid": {
-          "home": {
-            "played": 19,
-            "goals_for": 45,
-            "goals_against": 16
-          },
-          "away": {
-            "played": 13,
-            "goals_for": 25,
-            "goals_against": 13
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
           }
         },
         "Real Sociedad": {
           "home": {
-            "played": 19,
-            "goals_for": 37,
-            "goals_against": 31
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
           },
           "away": {
-            "played": 13,
-            "goals_for": 14,
-            "goals_against": 18
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
           }
         },
-        "Sevilla": {
+        "Ath. Bilbao": {
           "home": {
-            "played": 19,
-            "goals_for": 24,
-            "goals_against": 25
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
           },
           "away": {
-            "played": 13,
-            "goals_for": 16,
-            "goals_against": 22
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
           }
         },
-        "Valencia": {
+        "FC Seville": {
           "home": {
-            "played": 19,
-            "goals_for": 27,
-            "goals_against": 23
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
           },
           "away": {
-            "played": 13,
-            "goals_for": 11,
-            "goals_against": 26
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          }
+        },
+        "Valence": {
+          "home": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          },
+          "away": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          }
+        },
+        "Celta Vigo": {
+          "home": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          },
+          "away": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          }
+        },
+        "Espanyol": {
+          "home": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          },
+          "away": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          }
+        },
+        "Real Madrid": {
+          "home": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          },
+          "away": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
           }
         },
         "Villarreal": {
           "home": {
-            "played": 19,
-            "goals_for": 48,
-            "goals_against": 19
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
           },
           "away": {
-            "played": 11,
-            "goals_for": 17,
-            "goals_against": 18
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          }
+        },
+        "Getafe": {
+          "home": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          },
+          "away": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          }
+        },
+        "Racing Santander": {
+          "home": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          },
+          "away": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          }
+        },
+        "Barcelone": {
+          "home": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          },
+          "away": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          }
+        },
+        "Osasuna": {
+          "home": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          },
+          "away": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          }
+        },
+        "Levante": {
+          "home": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          },
+          "away": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
           }
         }
       },
       "matches": [
         {
-          "home_team": "Deportivo",
+          "home_team": "La Corogne",
           "away_team": "Elche",
-          "date": "2026-08-17T00:00:00Z"
+          "date": "2026-08-17T19:00:00Z"
         },
         {
-          "home_team": "Atlético de Madrid",
-          "away_team": "Málaga",
-          "date": "2026-08-19T00:00:00Z"
+          "home_team": "Atl. Madrid",
+          "away_team": "Malaga",
+          "date": "2026-08-19T19:00:00Z"
         },
         {
-          "home_team": "Rayo Vallecano",
-          "away_team": "Alavés",
-          "date": "2026-08-20T00:00:00Z"
+          "home_team": "Vallecano",
+          "away_team": "Alaves",
+          "date": "2026-08-20T19:00:00Z"
         },
         {
-          "home_team": "Real Betis",
+          "home_team": "Betis",
           "away_team": "Real Sociedad",
-          "date": "2026-08-21T00:00:00Z"
+          "date": "2026-08-21T19:00:00Z"
         },
         {
-          "home_team": "Athletic Club",
-          "away_team": "Sevilla",
-          "date": "2026-08-22T00:00:00Z"
+          "home_team": "Ath. Bilbao",
+          "away_team": "FC Seville",
+          "date": "2026-08-22T15:00:00Z"
         },
         {
-          "home_team": "Valencia",
-          "away_team": "Celta",
-          "date": "2026-08-22T00:00:00Z"
+          "home_team": "Valence",
+          "away_team": "Celta Vigo",
+          "date": "2026-08-22T17:30:00Z"
         },
         {
           "home_team": "Espanyol",
           "away_team": "Real Madrid",
-          "date": "2026-08-22T00:00:00Z"
+          "date": "2026-08-22T19:30:00Z"
         },
         {
-          "home_team": "Atlético de Madrid",
+          "home_team": "Atl. Madrid",
           "away_team": "Villarreal",
-          "date": "2026-08-23T00:00:00Z"
+          "date": "2026-08-23T15:00:00Z"
         },
         {
           "home_team": "Getafe",
           "away_team": "Racing Santander",
-          "date": "2026-08-23T00:00:00Z"
+          "date": "2026-08-23T17:30:00Z"
         },
         {
           "home_team": "Elche",
-          "away_team": "Barcelona",
-          "date": "2026-08-23T00:00:00Z"
+          "away_team": "Barcelone",
+          "date": "2026-08-23T19:30:00Z"
         },
         {
           "home_team": "Osasuna",
           "away_team": "Levante",
-          "date": "2026-08-23T00:00:00Z"
+          "date": "2026-08-24T17:30:00Z"
         },
         {
-          "home_team": "Málaga",
-          "away_team": "Deportivo",
-          "date": "2026-08-24T00:00:00Z"
+          "home_team": "Malaga",
+          "away_team": "La Corogne",
+          "date": "2026-08-24T19:30:00Z"
+        },
+        {
+          "home_team": "Valence",
+          "away_team": "Betis",
+          "date": "2026-08-25T19:00:00Z"
+        },
+        {
+          "home_team": "Real Madrid",
+          "away_team": "Real Sociedad",
+          "date": "2026-08-26T19:00:00Z"
+        },
+        {
+          "home_team": "Celta Vigo",
+          "away_team": "Osasuna",
+          "date": "2026-08-27T18:30:00Z"
+        },
+        {
+          "home_team": "Barcelone",
+          "away_team": "Ath. Bilbao",
+          "date": "2026-08-27T19:00:00Z"
         },
         {
           "home_team": "Racing Santander",
           "away_team": "Elche",
-          "date": "2026-08-28T00:00:00Z"
+          "date": "2026-08-28T17:00:00Z"
         }
       ]
     },
@@ -329,242 +336,242 @@
       "teams": {
         "Arsenal": {
           "home": {
-            "played": 19,
-            "goals_for": 41,
-            "goals_against": 11
+            "played": 13,
+            "goals_for": 31,
+            "goals_against": 8
           },
           "away": {
-            "played": 19,
-            "goals_for": 30,
+            "played": 15,
+            "goals_for": 25,
+            "goals_against": 13
+          }
+        },
+        "Coventry": {
+          "home": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          },
+          "away": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          }
+        },
+        "Hull": {
+          "home": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          },
+          "away": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          }
+        },
+        "Manchester Utd": {
+          "home": {
+            "played": 14,
+            "goals_for": 27,
+            "goals_against": 16
+          },
+          "away": {
+            "played": 14,
+            "goals_for": 23,
+            "goals_against": 22
+          }
+        },
+        "Everton": {
+          "home": {
+            "played": 14,
+            "goals_for": 16,
+            "goals_against": 19
+          },
+          "away": {
+            "played": 14,
+            "goals_for": 16,
+            "goals_against": 14
+          }
+        },
+        "Crystal Palace": {
+          "home": {
+            "played": 14,
+            "goals_for": 14,
+            "goals_against": 18
+          },
+          "away": {
+            "played": 14,
+            "goals_for": 16,
             "goals_against": 16
           }
         },
-        "Aston Villa": {
+        "Ipswich": {
           "home": {
-            "played": 19,
-            "goals_for": 32,
-            "goals_against": 22
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
           },
           "away": {
-            "played": 19,
-            "goals_for": 24,
-            "goals_against": 27
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
           }
         },
-        "Bournemouth": {
+        "Sunderland": {
           "home": {
-            "played": 19,
-            "goals_for": 25,
-            "goals_against": 20
+            "played": 14,
+            "goals_for": 22,
+            "goals_against": 13
           },
           "away": {
-            "played": 19,
-            "goals_for": 17,
+            "played": 14,
+            "goals_for": 7,
+            "goals_against": 21
+          }
+        },
+        "Nottingham": {
+          "home": {
+            "played": 14,
+            "goals_for": 13,
+            "goals_against": 19
+          },
+          "away": {
+            "played": 14,
+            "goals_for": 13,
+            "goals_against": 22
+          }
+        },
+        "Leeds": {
+          "home": {
+            "played": 14,
+            "goals_for": 22,
+            "goals_against": 19
+          },
+          "away": {
+            "played": 14,
+            "goals_for": 15,
             "goals_against": 28
           }
         },
         "Brentford": {
           "home": {
-            "played": 19,
-            "goals_for": 26,
-            "goals_against": 25
+            "played": 14,
+            "goals_for": 24,
+            "goals_against": 15
           },
           "away": {
-            "played": 19,
-            "goals_for": 32,
-            "goals_against": 27
-          }
-        },
-        "Brighton": {
-          "home": {
-            "played": 19,
-            "goals_for": 33,
-            "goals_against": 21
-          },
-          "away": {
-            "played": 19,
-            "goals_for": 22,
-            "goals_against": 31
-          }
-        },
-        "Chelsea": {
-          "home": {
-            "played": 19,
-            "goals_for": 30,
-            "goals_against": 20
-          },
-          "away": {
-            "played": 19,
-            "goals_for": 17,
-            "goals_against": 31
-          }
-        },
-        "Coventry": {
-          "home": {
-            "played": 23,
-            "goals_for": 51,
-            "goals_against": 19
-          },
-          "away": {
-            "played": 23,
-            "goals_for": 46,
-            "goals_against": 26
-          }
-        },
-        "Crystal Palace": {
-          "home": {
-            "played": 19,
+            "played": 14,
             "goals_for": 20,
-            "goals_against": 23
-          },
-          "away": {
-            "played": 19,
-            "goals_for": 28,
-            "goals_against": 28
-          }
-        },
-        "Everton": {
-          "home": {
-            "played": 19,
-            "goals_for": 29,
-            "goals_against": 21
-          },
-          "away": {
-            "played": 19,
-            "goals_for": 20,
-            "goals_against": 35
-          }
-        },
-        "Fulham": {
-          "home": {
-            "played": 19,
-            "goals_for": 36,
-            "goals_against": 30
-          },
-          "away": {
-            "played": 19,
-            "goals_for": 17,
             "goals_against": 25
-          }
-        },
-        "Hull City": {
-          "home": {
-            "played": 23,
-            "goals_for": 35,
-            "goals_against": 34
-          },
-          "away": {
-            "played": 23,
-            "goals_for": 35,
-            "goals_against": 32
-          }
-        },
-        "Ipswich Town": {
-          "home": {
-            "played": 23,
-            "goals_for": 43,
-            "goals_against": 17
-          },
-          "away": {
-            "played": 23,
-            "goals_for": 37,
-            "goals_against": 30
-          }
-        },
-        "Leeds United": {
-          "home": {
-            "played": 19,
-            "goals_for": 19,
-            "goals_against": 23
-          },
-          "away": {
-            "played": 19,
-            "goals_for": 22,
-            "goals_against": 28
-          }
-        },
-        "Liverpool": {
-          "home": {
-            "played": 19,
-            "goals_for": 34,
-            "goals_against": 20
-          },
-          "away": {
-            "played": 19,
-            "goals_for": 29,
-            "goals_against": 33
-          }
-        },
-        "Manchester City": {
-          "home": {
-            "played": 19,
-            "goals_for": 45,
-            "goals_against": 14
-          },
-          "away": {
-            "played": 19,
-            "goals_for": 32,
-            "goals_against": 21
-          }
-        },
-        "Manchester United": {
-          "home": {
-            "played": 19,
-            "goals_for": 39,
-            "goals_against": 24
-          },
-          "away": {
-            "played": 19,
-            "goals_for": 30,
-            "goals_against": 26
-          }
-        },
-        "Newcastle": {
-          "home": {
-            "played": 19,
-            "goals_for": 26,
-            "goals_against": 27
-          },
-          "away": {
-            "played": 19,
-            "goals_for": 21,
-            "goals_against": 23
-          }
-        },
-        "Nottingham Forest": {
-          "home": {
-            "played": 19,
-            "goals_for": 22,
-            "goals_against": 31
-          },
-          "away": {
-            "played": 19,
-            "goals_for": 26,
-            "goals_against": 26
-          }
-        },
-        "Sunderland": {
-          "home": {
-            "played": 19,
-            "goals_for": 30,
-            "goals_against": 20
-          },
-          "away": {
-            "played": 19,
-            "goals_for": 22,
-            "goals_against": 26
           }
         },
         "Tottenham": {
           "home": {
-            "played": 19,
-            "goals_for": 27,
-            "goals_against": 30
+            "played": 14,
+            "goals_for": 17,
+            "goals_against": 22
           },
           "away": {
-            "played": 19,
-            "goals_for": 19,
-            "goals_against": 35
+            "played": 14,
+            "goals_for": 21,
+            "goals_against": 21
+          }
+        },
+        "Brighton": {
+          "home": {
+            "played": 14,
+            "goals_for": 22,
+            "goals_against": 15
+          },
+          "away": {
+            "played": 14,
+            "goals_for": 16,
+            "goals_against": 20
+          }
+        },
+        "Aston Villa": {
+          "home": {
+            "played": 14,
+            "goals_for": 20,
+            "goals_against": 11
+          },
+          "away": {
+            "played": 14,
+            "goals_for": 18,
+            "goals_against": 19
+          }
+        },
+        "Manchester City": {
+          "home": {
+            "played": 14,
+            "goals_for": 34,
+            "goals_against": 9
+          },
+          "away": {
+            "played": 14,
+            "goals_for": 23,
+            "goals_against": 16
+          }
+        },
+        "Bournemouth": {
+          "home": {
+            "played": 14,
+            "goals_for": 21,
+            "goals_against": 15
+          },
+          "away": {
+            "played": 14,
+            "goals_for": 23,
+            "goals_against": 31
+          }
+        },
+        "Newcastle": {
+          "home": {
+            "played": 14,
+            "goals_for": 26,
+            "goals_against": 23
+          },
+          "away": {
+            "played": 14,
+            "goals_for": 14,
+            "goals_against": 19
+          }
+        },
+        "Liverpool": {
+          "home": {
+            "played": 14,
+            "goals_for": 26,
+            "goals_against": 16
+          },
+          "away": {
+            "played": 14,
+            "goals_for": 21,
+            "goals_against": 21
+          }
+        },
+        "Fulham": {
+          "home": {
+            "played": 14,
+            "goals_for": 24,
+            "goals_against": 17
+          },
+          "away": {
+            "played": 14,
+            "goals_for": 16,
+            "goals_against": 25
+          }
+        },
+        "Chelsea": {
+          "home": {
+            "played": 14,
+            "goals_for": 23,
+            "goals_against": 16
+          },
+          "away": {
+            "played": 13,
+            "goals_for": 25,
+            "goals_against": 15
           }
         }
       },
@@ -572,350 +579,326 @@
         {
           "home_team": "Arsenal",
           "away_team": "Coventry",
-          "date": "2026-08-21T00:00:00Z"
+          "date": "2026-08-21T19:00:00Z"
         },
         {
-          "home_team": "Hull City",
-          "away_team": "Manchester United",
-          "date": "2026-08-22T00:00:00Z"
+          "home_team": "Hull",
+          "away_team": "Manchester Utd",
+          "date": "2026-08-22T11:30:00Z"
         },
         {
           "home_team": "Everton",
           "away_team": "Crystal Palace",
-          "date": "2026-08-22T00:00:00Z"
+          "date": "2026-08-22T14:00:00Z"
         },
         {
-          "home_team": "Ipswich Town",
+          "home_team": "Ipswich",
           "away_team": "Sunderland",
-          "date": "2026-08-22T00:00:00Z"
+          "date": "2026-08-22T14:00:00Z"
         },
         {
-          "home_team": "Nottingham Forest",
-          "away_team": "Leeds United",
-          "date": "2026-08-22T00:00:00Z"
+          "home_team": "Nottingham",
+          "away_team": "Leeds",
+          "date": "2026-08-22T14:00:00Z"
         },
         {
           "home_team": "Brentford",
           "away_team": "Tottenham",
-          "date": "2026-08-22T00:00:00Z"
+          "date": "2026-08-22T16:30:00Z"
         },
         {
           "home_team": "Brighton",
           "away_team": "Aston Villa",
-          "date": "2026-08-23T00:00:00Z"
+          "date": "2026-08-23T13:00:00Z"
         },
         {
           "home_team": "Manchester City",
           "away_team": "Bournemouth",
-          "date": "2026-08-23T00:00:00Z"
+          "date": "2026-08-23T13:00:00Z"
         },
         {
           "home_team": "Newcastle",
           "away_team": "Liverpool",
-          "date": "2026-08-23T00:00:00Z"
+          "date": "2026-08-23T15:30:00Z"
         },
         {
           "home_team": "Fulham",
           "away_team": "Chelsea",
-          "date": "2026-08-24T00:00:00Z"
+          "date": "2026-08-24T19:00:00Z"
         },
         {
           "home_team": "Crystal Palace",
           "away_team": "Manchester City",
-          "date": "2026-08-28T00:00:00Z"
+          "date": "2026-08-28T19:00:00Z"
         },
         {
           "home_team": "Liverpool",
-          "away_team": "Nottingham Forest",
-          "date": "2026-08-29T00:00:00Z"
+          "away_team": "Nottingham",
+          "date": "2026-08-29T11:30:00Z"
         },
         {
           "home_team": "Bournemouth",
           "away_team": "Everton",
-          "date": "2026-08-29T00:00:00Z"
+          "date": "2026-08-29T14:00:00Z"
         },
         {
           "home_team": "Coventry",
-          "away_team": "Hull City",
-          "date": "2026-08-29T00:00:00Z"
+          "away_team": "Hull",
+          "date": "2026-08-29T14:00:00Z"
         },
         {
           "home_team": "Tottenham",
           "away_team": "Newcastle",
-          "date": "2026-08-29T00:00:00Z"
+          "date": "2026-08-29T16:30:00Z"
         },
         {
           "home_team": "Chelsea",
           "away_team": "Brighton",
-          "date": "2026-08-30T00:00:00Z"
+          "date": "2026-08-30T13:00:00Z"
         },
         {
-          "home_team": "Leeds United",
+          "home_team": "Leeds",
           "away_team": "Brentford",
-          "date": "2026-08-30T00:00:00Z"
+          "date": "2026-08-30T13:00:00Z"
         },
         {
           "home_team": "Sunderland",
           "away_team": "Fulham",
-          "date": "2026-08-30T00:00:00Z"
+          "date": "2026-08-30T13:00:00Z"
         },
         {
-          "home_team": "Manchester United",
-          "away_team": "Ipswich Town",
-          "date": "2026-08-30T00:00:00Z"
+          "home_team": "Manchester Utd",
+          "away_team": "Ipswich",
+          "date": "2026-08-30T15:30:00Z"
         },
         {
           "home_team": "Aston Villa",
           "away_team": "Arsenal",
-          "date": "2026-08-31T00:00:00Z"
+          "date": "2026-08-31T19:00:00Z"
         },
         {
-          "home_team": "Ipswich Town",
+          "home_team": "Ipswich",
           "away_team": "Liverpool",
-          "date": "2026-09-04T00:00:00Z"
+          "date": "2026-09-04T19:00:00Z"
         }
       ]
     },
     "Ligue 1": {
       "teams": {
-        "Angers": {
-          "home": {
-            "played": 17,
-            "goals_for": 20,
-            "goals_against": 18
-          },
-          "away": {
-            "played": 17,
-            "goals_for": 12,
-            "goals_against": 26
-          }
-        },
-        "Auxerre": {
-          "home": {
-            "played": 17,
-            "goals_for": 19,
-            "goals_against": 27
-          },
-          "away": {
-            "played": 17,
-            "goals_for": 18,
-            "goals_against": 33
-          }
-        },
-        "Brest": {
-          "home": {
-            "played": 17,
-            "goals_for": 18,
-            "goals_against": 20
-          },
-          "away": {
-            "played": 17,
-            "goals_for": 11,
-            "goals_against": 28
-          }
-        },
-        "Le Havre": {
-          "home": {
-            "played": 17,
-            "goals_for": 18,
-            "goals_against": 17
-          },
-          "away": {
-            "played": 17,
-            "goals_for": 16,
-            "goals_against": 27
-          }
-        },
-        "Le Mans": {
-          "home": {
-            "played": 16,
-            "goals_for": 19,
-            "goals_against": 7
-          },
-          "away": {
-            "played": 15,
-            "goals_for": 27,
-            "goals_against": 22
-          }
-        },
-        "Lens": {
-          "home": {
-            "played": 17,
-            "goals_for": 35,
-            "goals_against": 13
-          },
-          "away": {
-            "played": 17,
-            "goals_for": 31,
-            "goals_against": 22
-          }
-        },
-        "Lille": {
-          "home": {
-            "played": 17,
-            "goals_for": 30,
-            "goals_against": 18
-          },
-          "away": {
-            "played": 17,
-            "goals_for": 23,
-            "goals_against": 22
-          }
-        },
-        "Lorient": {
-          "home": {
-            "played": 17,
-            "goals_for": 28,
-            "goals_against": 27
-          },
-          "away": {
-            "played": 17,
-            "goals_for": 19,
-            "goals_against": 23
-          }
-        },
-        "Lyon": {
-          "home": {
-            "played": 17,
-            "goals_for": 30,
-            "goals_against": 18
-          },
-          "away": {
-            "played": 17,
-            "goals_for": 23,
-            "goals_against": 22
-          }
-        },
         "Marseille": {
           "home": {
-            "played": 17,
-            "goals_for": 41,
-            "goals_against": 20
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
           },
           "away": {
-            "played": 17,
-            "goals_for": 22,
-            "goals_against": 25
-          }
-        },
-        "Metz": {
-          "home": {
-            "played": 17,
-            "goals_for": 15,
-            "goals_against": 32
-          },
-          "away": {
-            "played": 17,
-            "goals_for": 17,
-            "goals_against": 44
-          }
-        },
-        "Monaco": {
-          "home": {
-            "played": 17,
-            "goals_for": 30,
-            "goals_against": 19
-          },
-          "away": {
-            "played": 17,
-            "goals_for": 28,
-            "goals_against": 28
-          }
-        },
-        "Nantes": {
-          "home": {
-            "played": 17,
-            "goals_for": 15,
-            "goals_against": 32
-          },
-          "away": {
-            "played": 17,
-            "goals_for": 17,
-            "goals_against": 44
-          }
-        },
-        "Nice": {
-          "home": {
-            "played": 17,
-            "goals_for": 18,
-            "goals_against": 27
-          },
-          "away": {
-            "played": 17,
-            "goals_for": 11,
-            "goals_against": 25
-          }
-        },
-        "Paris FC": {
-          "home": {
-            "played": 17,
-            "goals_for": 28,
-            "goals_against": 23
-          },
-          "away": {
-            "played": 17,
-            "goals_for": 15,
-            "goals_against": 32
-          }
-        },
-        "Paris Saint-Germain": {
-          "home": {
-            "played": 17,
-            "goals_for": 41,
-            "goals_against": 12
-          },
-          "away": {
-            "played": 17,
-            "goals_for": 33,
-            "goals_against": 17
-          }
-        },
-        "Rennes": {
-          "home": {
-            "played": 17,
-            "goals_for": 33,
-            "goals_against": 23
-          },
-          "away": {
-            "played": 17,
-            "goals_for": 27,
-            "goals_against": 31
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
           }
         },
         "Strasbourg": {
           "home": {
-            "played": 17,
-            "goals_for": 25,
-            "goals_against": 24
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
           },
           "away": {
-            "played": 17,
-            "goals_for": 22,
-            "goals_against": 22
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          }
+        },
+        "Lens": {
+          "home": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          },
+          "away": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          }
+        },
+        "Auxerre": {
+          "home": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          },
+          "away": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          }
+        },
+        "Le Mans": {
+          "home": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          },
+          "away": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          }
+        },
+        "Brest": {
+          "home": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          },
+          "away": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          }
+        },
+        "Nice": {
+          "home": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          },
+          "away": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          }
+        },
+        "Lorient": {
+          "home": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          },
+          "away": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
           }
         },
         "Toulouse": {
           "home": {
-            "played": 17,
-            "goals_for": 31,
-            "goals_against": 25
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
           },
           "away": {
-            "played": 17,
-            "goals_for": 17,
-            "goals_against": 26
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          }
+        },
+        "Lyon": {
+          "home": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          },
+          "away": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
           }
         },
         "Troyes": {
           "home": {
-            "played": 17,
-            "goals_for": 40,
-            "goals_against": 17
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
           },
           "away": {
-            "played": 17,
-            "goals_for": 20,
-            "goals_against": 16
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          }
+        },
+        "Paris FC": {
+          "home": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          },
+          "away": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          }
+        },
+        "Angers": {
+          "home": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          },
+          "away": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          }
+        },
+        "Lille": {
+          "home": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          },
+          "away": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          }
+        },
+        "Le Havre": {
+          "home": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          },
+          "away": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          }
+        },
+        "Monaco": {
+          "home": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          },
+          "away": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          }
+        },
+        "PSG": {
+          "home": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          },
+          "away": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          }
+        },
+        "Rennes": {
+          "home": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
+          },
+          "away": {
+            "played": 0,
+            "goals_for": 0,
+            "goals_against": 0
           }
         }
       },
@@ -923,92 +906,92 @@
         {
           "home_team": "Marseille",
           "away_team": "Strasbourg",
-          "date": "2026-08-21T00:00:00Z"
+          "date": "2026-08-21T18:45:00Z"
         },
         {
           "home_team": "Lens",
           "away_team": "Auxerre",
-          "date": "2026-08-22T00:00:00Z"
+          "date": "2026-08-22T15:15:00Z"
         },
         {
           "home_team": "Le Mans",
           "away_team": "Brest",
-          "date": "2026-08-22T00:00:00Z"
+          "date": "2026-08-22T18:45:00Z"
         },
         {
           "home_team": "Nice",
           "away_team": "Lorient",
-          "date": "2026-08-22T00:00:00Z"
+          "date": "2026-08-22T18:45:00Z"
         },
         {
           "home_team": "Toulouse",
           "away_team": "Lyon",
-          "date": "2026-08-22T00:00:00Z"
+          "date": "2026-08-22T18:45:00Z"
         },
         {
           "home_team": "Troyes",
           "away_team": "Paris FC",
-          "date": "2026-08-22T00:00:00Z"
+          "date": "2026-08-22T18:45:00Z"
         },
         {
           "home_team": "Angers",
           "away_team": "Lille",
-          "date": "2026-08-23T00:00:00Z"
+          "date": "2026-08-23T13:00:00Z"
         },
         {
           "home_team": "Le Havre",
           "away_team": "Monaco",
-          "date": "2026-08-23T00:00:00Z"
+          "date": "2026-08-23T15:15:00Z"
         },
         {
-          "home_team": "Paris Saint-Germain",
+          "home_team": "PSG",
           "away_team": "Rennes",
-          "date": "2026-08-23T00:00:00Z"
+          "date": "2026-08-23T18:45:00Z"
         },
         {
           "home_team": "Lille",
-          "away_team": "Paris Saint-Germain",
-          "date": "2026-08-28T00:00:00Z"
+          "away_team": "PSG",
+          "date": "2026-08-28T18:45:00Z"
         },
         {
           "home_team": "Strasbourg",
           "away_team": "Lens",
-          "date": "2026-08-29T00:00:00Z"
+          "date": "2026-08-29T15:15:00Z"
         },
         {
           "home_team": "Auxerre",
           "away_team": "Angers",
-          "date": "2026-08-29T00:00:00Z"
+          "date": "2026-08-29T18:45:00Z"
         },
         {
           "home_team": "Brest",
           "away_team": "Toulouse",
-          "date": "2026-08-29T00:00:00Z"
+          "date": "2026-08-29T18:45:00Z"
         },
         {
           "home_team": "Lorient",
           "away_team": "Troyes",
-          "date": "2026-08-29T00:00:00Z"
+          "date": "2026-08-29T18:45:00Z"
         },
         {
           "home_team": "Lyon",
           "away_team": "Le Havre",
-          "date": "2026-08-29T00:00:00Z"
+          "date": "2026-08-29T18:45:00Z"
         },
         {
           "home_team": "Paris FC",
           "away_team": "Nice",
-          "date": "2026-08-30T00:00:00Z"
+          "date": "2026-08-30T13:00:00Z"
         },
         {
           "home_team": "Rennes",
           "away_team": "Le Mans",
-          "date": "2026-08-30T00:00:00Z"
+          "date": "2026-08-30T15:15:00Z"
         },
         {
           "home_team": "Monaco",
           "away_team": "Marseille",
-          "date": "2026-08-30T00:00:00Z"
+          "date": "2026-08-30T18:45:00Z"
         }
       ]
     }
