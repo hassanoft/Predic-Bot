@@ -88,6 +88,7 @@ const CATEGORIES = {
   btts: { label: 'BTTS', requiresExactScore: false },
   over_under: { label: 'Over/Under', requiresExactScore: false },
   double_chance: { label: 'Double Chance', requiresExactScore: false },
+  pronostics: { label: 'Pronostics (combiné)', requiresExactScore: false },
   score_exact: { label: 'Score Exact', requiresExactScore: true },
 };
 
