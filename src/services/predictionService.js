@@ -31,7 +31,7 @@ function getMarket(match, marketKey) {
 // ─────────────────────────────────────────────────────────────
 // EXTRACTION PAR CATÉGORIE
 // Chaque fonction renvoie soit { pick, confidencePct, raw } soit null
-// si les données réelles sont insuffisantes pour cette catégorie.
+// si l'API ne fournit pas assez de données pour cette catégorie.
 // ─────────────────────────────────────────────────────────────
 
 function extract1X2(match) {
@@ -84,7 +84,7 @@ function extractBTTS(match) {
 
 /**
  * "Total de buts" : agrège tous les marchés Over/Under de buts totaux
- * (over_25, over_35) réellement calculés, sans en inventer.
+ * (over_25, over_35) réellement fournis par l'API, sans en inventer.
  */
 function extractTotalGoals(match) {
   const marketDefs = [
@@ -112,7 +112,7 @@ function extractTotalGoals(match) {
 
 /**
  * "Over/Under" : sélectionne le meilleur pronostic Over/Under parmi tous
- * les marchés de buts (totaux ou par équipe) réellement calculés.
+ * les marchés de buts (totaux ou par équipe) réellement disponibles.
  */
 function extractOverUnder(match) {
   const marketDefs = [
@@ -168,9 +168,132 @@ const EXTRACTORS = {
   score_exact: extractExactScore,
 };
 
+const COMBO_CATEGORY_LABELS = {
+  '1x2': '1X2',
+  double_chance: 'Double Chance',
+  btts: 'BTTS',
+  over_under: 'Over/Under',
+  total_buts: 'Total de buts',
+};
+
 /**
- * Parcourt la liste de matchs et sélectionne les meilleurs pronostics
- * exploitables pour une catégorie donnée, triés par confiance décroissante.
+ * Sélectionne, pour UN match, le meilleur pronostic disponible parmi 1X2,
+ * Double Chance, BTTS, Over/Under et Total de buts (le Score Exact reste
+ * une catégorie à part, jamais incluse dans un combiné). Utilisé pour
+ * construire les tickets "PRONOSTICS" (combinés).
+ */
+function extractBestOverall(match) {
+  const candidates = [
+    { category: '1x2', result: extract1X2(match) },
+    { category: 'double_chance', result: extractDoubleChance(match) },
+    { category: 'btts', result: extractBTTS(match) },
+    { category: 'over_under', result: extractOverUnder(match) },
+  ];
+
+  const totalGoals = extractTotalGoals(match);
+  if (totalGoals) candidates.push({ category: 'total_buts', result: totalGoals.best });
+
+  const usable = candidates.filter((c) => c.result && typeof c.result.confidencePct === 'number');
+  if (usable.length === 0) return null;
+
+  usable.sort((a, b) => b.result.confidencePct - a.result.confidencePct);
+  const top = usable[0];
+  return { category: top.category, pick: top.result.pick, confidencePct: top.result.confidencePct };
+}
+
+function shuffleArray(arr) {
+  const copy = [...arr];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
+function sameMatchSet(entries, previousIds) {
+  if (!previousIds || previousIds.length !== entries.length) return false;
+  const current = entries.map((e) => e.match.id).sort().join('|');
+  const previous = [...previousIds].sort().join('|');
+  return current === previous;
+}
+
+/**
+ * Construit un ticket "combiné" : tire au sort `size` matchs distincts
+ * parmi ceux exploitables (au moins un marché calculable), sans jamais
+ * inclure deux fois le même match dans un même ticket. Si le tirage
+ * reproduit exactement le même ensemble de matchs que `previousIds`
+ * (ticket précédent), on retire une fois pour varier — sans jamais
+ * fabriquer de match ou de probabilité.
+ */
+function buildRandomCombo(matches, size, previousIds) {
+  if (!Array.isArray(matches) || matches.length === 0) return null;
+
+  const usable = matches
+    .map((match) => ({ match, best: extractBestOverall(match) }))
+    .filter((entry) => entry.best !== null);
+
+  if (usable.length === 0) return null;
+
+  const targetSize = Math.min(size, usable.length);
+
+  let entries = shuffleArray(usable).slice(0, targetSize);
+  if (usable.length > targetSize && sameMatchSet(entries, previousIds)) {
+    entries = shuffleArray(usable).slice(0, targetSize);
+  }
+
+  return {
+    requestedSize: size,
+    actualSize: entries.length,
+    entries,
+    matchIds: entries.map((e) => e.match.id),
+  };
+}
+
+/**
+ * Formate un ticket combiné en message Telegram (HTML).
+ * @param {object} ticket - retour de buildRandomCombo()
+ * @param {object} [options]
+ * @param {string} [options.title] - titre personnalisé (sinon généré automatiquement)
+ */
+function formatComboMessage(ticket, options = {}) {
+  const lines = ticket.entries.map((entry, index) => {
+    const m = entry.match;
+    const b = entry.best;
+    const dateLabel = m.start_date ? formatMatchDate(m.start_date) : null;
+
+    return (
+      `<b>${index + 1}.</b> ${escapeHtml(m.home_team)} 🆚 ${escapeHtml(m.away_team)}\n` +
+      (m.competition_name ? `🏆 ${escapeHtml(m.competition_name)}\n` : '') +
+      (dateLabel ? `🕒 ${dateLabel}\n` : '') +
+      `🎯 ${COMBO_CATEGORY_LABELS[b.category] || b.category} — <b>${escapeHtml(b.pick)}</b> (${b.confidencePct}%)`
+    );
+  });
+
+  const combinedProbability = ticket.entries.reduce((acc, e) => acc * (e.best.confidencePct / 100), 1);
+  const combinedPct = Math.round(combinedProbability * 1000) / 10;
+
+  const sizeNote =
+    ticket.actualSize < ticket.requestedSize
+      ? `⚠️ Seulement ${ticket.actualSize} match(s) exploitable(s) disponible(s) actuellement (au lieu de ${ticket.requestedSize} demandés).\n\n`
+      : '';
+
+  const title = options.title || `🎫 <b>COMBINÉ PRONOSTICS — ${ticket.actualSize} MATCHS</b>`;
+
+  return (
+    `${title}\n\n` +
+    sizeNote +
+    `${lines.join('\n\n')}\n\n` +
+    `━━━━━━━━━━━━━━\n` +
+    `📊 <b>Probabilité combinée estimée</b> : ${combinedPct}%\n` +
+    `🤖 <i>Football Prediction Bot</i>\n\n` +
+    `⚠️ <i>Un combiné exige que TOUS les pronostics se réalisent — le risque augmente avec le nombre de matchs. Estimation statistique, aucun résultat n'est garanti.</i>`
+  );
+}
+
+/**
+ * Parcourt la liste de matchs renvoyée par l'API et sélectionne les
+ * meilleurs pronostics exploitables pour une catégorie donnée, triés par
+ * confiance décroissante.
  */
 function selectBestForCategory(matches, category, limit = 1) {
   const extractor = EXTRACTORS[category];
@@ -217,6 +340,9 @@ function formatPredictionMessage(match, category, extracted) {
   }
 
   const dateLabel = match.start_date ? formatMatchDate(match.start_date) : null;
+  const fallbackNote = match._usedPreviousSeasonData
+    ? `ℹ️ <i>Historique de la saison en cours encore limité — estimation basée sur le classement final de la saison ${match._previousSeasonLabel || 'précédente'}.</i>\n\n`
+    : '';
 
   return (
     `⚽ <b>PRONOSTIC FOOTBALL</b>\n\n` +
@@ -227,6 +353,7 @@ function formatPredictionMessage(match, category, extracted) {
     `🔥 <b>Pronostic</b>\n${escapeHtml(pickLine)}\n\n` +
     `📊 <b>Confiance</b>\n${confidencePct}%\n\n` +
     `📈 <b>Modèle statistique</b>\nCalculé via un modèle de Poisson à partir des données réelles de classement (buts marqués/encaissés, domicile/extérieur).\n\n` +
+    fallbackNote +
     `━━━━━━━━━━━━━━\n` +
     `🤖 <i>Football Prediction Bot</i>\n\n` +
     `⚠️ <i>Estimation statistique, aucun résultat n'est garanti.</i>`
@@ -272,4 +399,7 @@ module.exports = {
   formatMatchDate,
   escapeHtml,
   NO_DATA_MESSAGES,
+  extractBestOverall,
+  buildRandomCombo,
+  formatComboMessage,
 };
